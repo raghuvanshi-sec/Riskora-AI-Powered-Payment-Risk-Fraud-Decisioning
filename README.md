@@ -1,181 +1,579 @@
-# Riskora — AI-Powered Payment Risk Intelligence
+# Riskora — AI-Powered Payment Risk & Fraud Decisioning
 
-A production-oriented full-stack fintech risk management platform that evaluates financial transactions in near real time, assigns risk scores (0–100), determines threat levels, and makes automated decisions (ALLOW / REVIEW / BLOCK) backed by explainable AI.
+> **Intelligent transaction risk assessment for modern payment systems.**
 
----
+Riskora is a full-stack **AI-powered payment risk and fraud decisioning platform** designed to evaluate transactions, identify suspicious behavior, generate explainable risk scores, and support automated as well as analyst-driven decisions.
 
-## Architecture
+The platform combines a **rule-based risk engine**, **XGBoost machine learning**, and **SHAP explainability** to produce a unified risk assessment for every transaction.
 
-```
-Client (React) ──► FastAPI Gateway ──► Risk Engine Service
-                                              │
-                     ┌─────────────────────────┼─────────────────────────┐
-                     ▼                         ▼                         ▼
-               Rules Engine          XGBoost ML Model          SHAP Explainer
-               (9 rules)           (ModelRegistry)           (feature attribution)
-                     │                         │                         │
-                     ▼                         ▼                         ▼
-               PostgreSQL/SQLite        PostgreSQL/SQLite        PostgreSQL/SQLite
-```
+Instead of treating fraud detection as a simple binary classification problem, Riskora provides a complete decisioning workflow:
 
-**Technology:** React 19 + Vite · FastAPI · SQLAlchemy 2.0 · XGBoost · SHAP · JWT Auth
+**Transaction → Risk Analysis → Risk Score → Explainability → Decision → Analyst Review → Audit Trail**
 
 ---
 
-## Project Structure
+## ✨ What Riskora Solves
 
-```
-backend/
-├── app/
-│   ├── api/routes/          # FastAPI route handlers
-│   │   ├── auth.py          # /auth/register, /auth/login
-│   │   ├── transactions.py  # CRUD + summary
-│   │   ├── risk.py          # /risk/* endpoints
-│   │   └── risk_ops.py      # /cases/* analyst workflow
-│   ├── core/               # config, security, errors
-│   ├── db/                 # database, seed data
-│   ├── ml/                 # XGBoost, features, training, SHAP, hybrid scoring
-│   ├── models/             # SQLAlchemy models (User, Transaction, RiskCase, etc.)
-│   ├── risk/               # Rules engine, feature extractor, scoring, explainability
-│   ├── schemas/            # Pydantic request/response models
-│   └── services/           # Business logic (transaction, risk, risk_ops, audit, ml)
-frontend/
-├── src/
-│   ├── auth/               # AuthContext, ProtectedRoute
-│   ├── components/         # Reusable UI (EmptyState, ErrorState, Skeletons)
-│   ├── services/           # API clients (api.js, transactionService, riskService, riskOpsService)
-│   ├── views/              # Page components
-│   │   ├── DashboardView    # Metrics, risk summary, recent transactions
-│   │   ├── TransactionsView # Paginated transaction list with search/filter
-│   │   ├── TransactionDetail# Signals, risk assessment, case management
-│   │   ├── RiskQueueView    # Analyst review queue
-│   │   ├── AlertsView       # Risk events and open cases
-│   │   └── LoginView        # Authentication
-│   ├── App.jsx             # Router + layout
-│   ├── index.css            # Design tokens + global styles
-│   ├── tokens.css           # Color, typography, spacing system
-│   └── components.css       # Reusable component styles
-docs/
-├── pre-deployment-audit.md  # Full QA audit report
+Modern payment systems process a large volume of transactions where fraudulent activity can be difficult to identify using static rules alone.
+
+Riskora addresses this by combining:
+
+* 🧠 **Machine Learning** for fraud probability estimation
+* ⚙️ **Rule-Based Detection** for deterministic risk signals
+* 📊 **Hybrid Risk Scoring** for balanced decisioning
+* 🔍 **SHAP Explainability** to understand model decisions
+* 🚦 **Automated Decisioning** — `ALLOW`, `REVIEW`, or `BLOCK`
+* 👨‍💻 **Analyst Case Management** for suspicious transactions
+* 📝 **Audit Logging** for traceability and compliance-oriented workflows
+* 🔐 **JWT Authentication + RBAC** for controlled access
+
+---
+
+## 🎯 Core Concept
+
+Riskora evaluates multiple transaction signals such as:
+
+* Transaction amount
+* Transaction velocity
+* Device changes
+* Location changes
+* Merchant risk
+* Failed payment attempts
+* Account age
+* Historical transaction behavior
+* ML-generated fraud probability
+
+These signals are processed through the risk engine and converted into a normalized **0–100 risk score**.
+
+### Risk Levels
+
+| Risk Score | Level     | Interpretation                            |
+| ---------: | --------- | ----------------------------------------- |
+|     `< 30` | 🟢 LOW    | Transaction appears normal                |
+|    `30–69` | 🟡 MEDIUM | Transaction requires additional attention |
+|     `≥ 70` | 🔴 HIGH   | Strong indicators of potential fraud      |
+
+---
+
+# 🏗️ System Architecture
+
+```mermaid
+flowchart LR
+
+    U[Payment / Client Request]
+
+    F[React Frontend]
+
+    API[FastAPI API Gateway]
+
+    AUTH[Authentication & RBAC]
+
+    TX[Transaction Service]
+
+    RISK[Risk Engine]
+
+    RULES[Rule Engine]
+    ML[XGBoost ML Model]
+    SHAP[SHAP Explainability]
+
+    HYBRID[Hybrid Risk Scoring]
+
+    DB[(PostgreSQL / SQLite)]
+
+    CASE[Risk Case Management]
+
+    AUDIT[Audit Logging]
+
+    U --> F
+    F --> API
+
+    API --> AUTH
+    API --> TX
+    API --> RISK
+
+    TX --> DB
+
+    RISK --> RULES
+    RISK --> ML
+    ML --> SHAP
+
+    RULES --> HYBRID
+    ML --> HYBRID
+
+    HYBRID --> DB
+    HYBRID --> CASE
+
+    CASE --> AUDIT
+    TX --> AUDIT
+    AUTH --> AUDIT
 ```
 
 ---
 
-## Features
+# 🧠 Risk Decisioning Pipeline
 
-### Completed Phases
+```mermaid
+flowchart TD
 
-| Phase | Description |
-| ------- | ------------- |
-| 1–3 | Project foundation, PostgreSQL/SQLAlchemy, JWT authentication + RBAC |
-| 4 | Transaction management: CRUD, search, pagination, summary |
-| 5 | Rule-based risk engine: 9 rules (amount, velocity, device, location, merchant, failed attempts, account age) |
-| 6 | XGBoost ML pipeline: feature engineering, ModelRegistry, training interface |
-| 7 | SHAP explainability + hybrid engine (40% rules + 60% ML) |
-| 8 | Analyst operations: RiskCase workflow, analyst actions, audit trail |
+    A[Incoming Transaction]
 
-### Risk Engine
+    B[Feature Extraction]
 
-The rules engine evaluates every transaction against 9 rules:
+    C[Rule-Based Analysis]
 
-| Rule | Trigger | Weight |
-| ------ | --------- | -------- |
-| `HIGH_AMOUNT` | amount > ₹75,000 | 20 |
-| `UNUSUAL_AMOUNT` | amount > 5× previous | 25 |
-| `HIGH_VELOCITY` | velocity > 6/hr | 15 |
-| `NEW_DEVICE` | device_change = true | 15 |
-| `LOCATION_CHANGE` | location_change = true | 12 |
-| `HIGH_MERCHANT_RISK` | merchant_risk > 61 | 18 |
-| `FAILED_ATTEMPTS` | failed_attempts ≥ 4 | 20 |
-| `NEW_ACCOUNT` | account_age_days < 30 | 10 |
-| `MULTIPLE_FAILED_ATTEMPTS` | failed_attempts ≥ 2 | 15 |
+    D[XGBoost Fraud Prediction]
 
-Thresholds: `LOW < 30`, `MEDIUM 30–69`, `HIGH ≥ 70`
+    E[SHAP Feature Attribution]
 
-### Hybrid Scoring
+    F[Hybrid Risk Score]
 
-```
-final_score = rules_score × 0.4 + ml_score × 0.6
-```
+    G{Risk Level}
 
-ML score derived from XGBoost `fraud_probability × 100`. All thresholds use shared constants from `app/risk/constants.py`.
+    H[ALLOW]
+    I[REVIEW]
+    J[BLOCK]
 
-### Analyst Workflow
+    K[Create / Update Risk Case]
 
-```
-Transaction → Risk Assessment → Auto-created Case → Review Queue
-    → Assign Analyst → Analyst Actions (ALLOW/BLOCK/ESCALATE/FLAG/DISMISS/ADD_NOTE)
-    → Status transitions (OPEN → IN_PROGRESS → RESOLVED/ESCALATED/CLOSED)
-    → Full audit log
+    L[Analyst Review]
+
+    M[Audit Trail]
+
+    A --> B
+
+    B --> C
+    B --> D
+
+    D --> E
+
+    C --> F
+    D --> F
+
+    F --> G
+
+    G -->|Low| H
+    G -->|Medium| I
+    G -->|High| J
+
+    I --> K
+    J --> K
+
+    K --> L
+    L --> M
+
+    H --> M
 ```
 
 ---
 
-## API Endpoints
+# ⚖️ Hybrid Risk Scoring
 
-| Method | Path | Auth | Description |
-| -------- | ------ | ------ | ------------- |
-| POST | `/api/v1/auth/register` | — | Register user |
-| POST | `/api/v1/auth/login` | — | Login, returns JWT |
-| GET | `/api/v1/auth/me` | Bearer | Current user |
-| GET | `/api/v1/transactions` | Bearer | List with pagination/filter/sort |
-| POST | `/api/v1/transactions` | RISK_ANALYST+ | Create transaction |
-| GET | `/api/v1/transactions/{id}` | Bearer | Transaction detail |
-| PATCH | `/api/v1/transactions/{id}` | RISK_ANALYST+ | Update transaction |
-| GET | `/api/v1/transactions/summary` | Bearer | Aggregate metrics |
-| POST | `/api/v1/risk/analyze/{id}` | RISK_ANALYST+ | Run rules-based analysis |
-| POST | `/api/v1/risk/analyze/{id}/ml` | RISK_ANALYST+ | Run hybrid ML analysis |
-| GET | `/api/v1/risk/analyze/{id}/explain` | Bearer | Full explainable result + SHAP |
-| GET | `/api/v1/risk/summary` | Bearer | Risk level counts |
-| GET | `/api/v1/risk/trends` | Bearer | Daily risk trends |
-| GET | `/api/v1/risk/recent` | Bearer | Recent risk decisions |
-| GET | `/api/v1/risk/events` | Bearer | Risk events |
-| GET | `/api/v1/risk/models` | Bearer | List ML model versions |
-| POST | `/api/v1/risk/models/{v}/activate` | RISK_ANALYST+ | Activate model version |
-| POST | `/api/v1/cases` | RISK_ANALYST+ | Create case |
-| GET | `/api/v1/cases` | Bearer | List cases |
-| GET | `/api/v1/cases/queue` | Bearer | Review queue |
-| GET | `/api/v1/cases/stats` | Bearer | Queue statistics |
-| GET | `/api/v1/cases/{id}` | Bearer | Case detail |
-| PATCH | `/api/v1/cases/{id}` | RISK_ANALYST+ | Update case |
-| POST | `/api/v1/cases/{id}/assign` | RISK_ANALYST+ | Assign analyst |
-| POST | `/api/v1/cases/{id}/actions` | RISK_ANALYST+ | Record analyst action |
-| GET | `/api/v1/cases/{id}/actions` | Bearer | Case action history |
+Riskora combines deterministic rules with machine-learning predictions.
+
+```text
+Final Risk Score
+       │
+       ├── 40% Rule-Based Risk
+       │
+       └── 60% ML Risk
+```
+
+The current hybrid scoring strategy is:
+
+```text
+final_score = (rules_score × 0.4) + (ml_score × 0.6)
+```
+
+Where:
+
+```text
+ml_score = fraud_probability × 100
+```
+
+This approach allows Riskora to combine:
+
+**Rules → known fraud indicators**
+
+with
+
+**ML → learned transaction patterns**
+
+while retaining explainability through SHAP.
 
 ---
 
-## Setup
+# 🚨 Rule-Based Risk Engine
 
-### Prerequisites
+Riskora currently implements multiple deterministic risk signals.
 
-- Python 3.11+
-- Node.js 18+
-- npm or yarn
+| Rule                       | Trigger                          | Weight |
+| -------------------------- | -------------------------------- | -----: |
+| `HIGH_AMOUNT`              | Amount > ₹75,000                 |     20 |
+| `UNUSUAL_AMOUNT`           | Amount > 5× previous transaction |     25 |
+| `HIGH_VELOCITY`            | More than 6 transactions/hour    |     15 |
+| `NEW_DEVICE`               | Device changed                   |     15 |
+| `LOCATION_CHANGE`          | Location changed                 |     12 |
+| `HIGH_MERCHANT_RISK`       | Merchant risk > 61               |     18 |
+| `FAILED_ATTEMPTS`          | Failed attempts ≥ 4              |     20 |
+| `NEW_ACCOUNT`              | Account age < 30 days            |     10 |
+| `MULTIPLE_FAILED_ATTEMPTS` | Failed attempts ≥ 2              |     15 |
 
-### Backend
+All scoring thresholds are centralized through shared risk-engine constants.
+
+---
+
+# 🤖 Machine Learning Layer
+
+Riskora uses **XGBoost** for transaction fraud probability estimation.
+
+### ML Pipeline
+
+```mermaid
+flowchart LR
+
+    D[Transaction Data]
+
+    F[Feature Engineering]
+
+    P[Preprocessing]
+
+    X[XGBoost Model]
+
+    PR[Fraud Probability]
+
+    S[Risk Score]
+
+    D --> F
+    F --> P
+    P --> X
+    X --> PR
+    PR --> S
+```
+
+The repository includes:
+
+* Feature engineering
+* Training configuration
+* Model registry
+* Model versioning
+* Model activation
+* Fraud probability prediction
+* Hybrid scoring integration
+
+If a trained model is unavailable, the system can fall back to rules-based scoring through the model abstraction.
+
+---
+
+# 🔍 Explainable AI
+
+Riskora is designed to answer not only:
+
+> **"Is this transaction risky?"**
+
+but also:
+
+> **"Why was this transaction considered risky?"**
+
+SHAP is used to provide feature-level attribution for ML predictions.
+
+Example explanation:
+
+```text
+Risk Score: 82
+Risk Level: HIGH
+
+Primary Signals:
+├── Unusual transaction amount
+├── New device
+├── High transaction velocity
+└── Elevated merchant risk
+```
+
+This makes the system more useful for analysts because decisions are supported by interpretable signals instead of a black-box prediction alone.
+
+---
+
+# 👨‍💻 Analyst Operations
+
+High-risk transactions can enter an analyst workflow.
+
+```mermaid
+stateDiagram-v2
+
+    [*] --> OPEN
+
+    OPEN --> IN_PROGRESS: Assign Analyst
+
+    IN_PROGRESS --> RESOLVED: Resolve
+    IN_PROGRESS --> ESCALATED: Escalate
+    IN_PROGRESS --> CLOSED: Close
+
+    OPEN --> ESCALATED: Escalate
+
+    RESOLVED --> [*]
+    ESCALATED --> [*]
+    CLOSED --> [*]
+```
+
+Supported analyst actions include:
+
+* `ALLOW`
+* `BLOCK`
+* `ESCALATE`
+* `FLAG`
+* `DISMISS`
+* `ADD_NOTE`
+
+Each case maintains an action history and audit trail.
+
+---
+
+# 🗂️ Project Structure
+
+```mermaid
+flowchart TD
+
+    ROOT["Riskora"]
+
+    ROOT --> BACKEND["backend/"]
+    ROOT --> FRONTEND["frontend/"]
+    ROOT --> DOCS["docs/"]
+    ROOT --> DATA["data/"]
+    ROOT --> MLROOT["ml/"]
+
+    %% Backend
+    BACKEND --> APP["app/"]
+
+    APP --> API["api/routes/"]
+    APP --> CORE["core/"]
+    APP --> DB["db/"]
+    APP --> MLMOD["ml/"]
+    APP --> MODELS["models/"]
+    APP --> RISK["risk/"]
+    APP --> SCHEMAS["schemas/"]
+    APP --> SERVICES["services/"]
+
+    API --> AUTH["auth.py"]
+    API --> TRANSACTIONS["transactions.py"]
+    API --> RISKROUTES["risk.py"]
+    API --> RISKOPS["risk_ops.py"]
+
+    RISK --> RULES["Rules Engine"]
+    RISK --> FEATURES["Feature Extraction"]
+    RISK --> SCORING["Risk Scoring"]
+    RISK --> EXPLAIN["Explainability"]
+
+    MLMOD --> XGB["XGBoost"]
+    MLMOD --> TRAIN["Training"]
+    MLMOD --> REGISTRY["Model Registry"]
+    MLMOD --> SHAP["SHAP"]
+
+    MODELS --> USER["User"]
+    MODELS --> TRANSACTION["Transaction"]
+    MODELS --> CASE["Risk Case"]
+    MODELS --> AUDITMODEL["Audit Log"]
+
+    SERVICES --> TXSERVICE["Transaction Service"]
+    SERVICES --> RISKSERVICE["Risk Service"]
+    SERVICES --> OPSERVICE["Risk Operations"]
+    SERVICES --> AUDITSERVICE["Audit Service"]
+
+    %% Frontend
+    FRONTEND --> SRC["src/"]
+
+    SRC --> AUTHFRONT["auth/"]
+    SRC --> COMPONENTS["components/"]
+    SRC --> SERVICESFRONT["services/"]
+    SRC --> VIEWS["views/"]
+
+    VIEWS --> DASH["Dashboard"]
+    VIEWS --> TXVIEW["Transactions"]
+    VIEWS --> DETAIL["Transaction Detail"]
+    VIEWS --> QUEUE["Risk Queue"]
+    VIEWS --> ALERTS["Alerts"]
+    VIEWS --> LOGIN["Login"]
+
+    %% Docs / Data / ML
+    DOCS --> AUDITDOC["Pre-deployment Audit"]
+
+    DATA --> IEEE["IEEE-CIS Dataset"]
+    MLROOT --> REPORTS["Reports"]
+    MLROOT --> ARTIFACTS["Model Artifacts"]
+```
+
+> **Note:** Large IEEE-CIS transaction datasets are intentionally excluded from Git history to keep the repository lightweight and within GitHub file-size limits.
+
+---
+
+# 🧩 Technology Stack
+
+## Frontend
+
+* React 19
+* Vite
+* JavaScript
+* CSS
+* API-driven dashboard architecture
+
+## Backend
+
+* Python
+* FastAPI
+* Uvicorn
+* SQLAlchemy 2.0
+* Pydantic
+
+## Machine Learning
+
+* XGBoost
+* Scikit-learn
+* SHAP
+* NumPy
+* Pandas
+
+## Database
+
+* SQLite for local development
+* PostgreSQL for production-oriented deployments
+
+## Security
+
+* JWT authentication
+* Role-Based Access Control
+* Password hashing
+* Protected API routes
+* Audit logging
+* Environment-based secrets
+
+---
+
+# 🔌 API Overview
+
+### Authentication
+
+| Method | Endpoint                | Description                  |
+| ------ | ----------------------- | ---------------------------- |
+| `POST` | `/api/v1/auth/register` | Register a user              |
+| `POST` | `/api/v1/auth/login`    | Authenticate and receive JWT |
+| `GET`  | `/api/v1/auth/me`       | Get current user             |
+
+### Transactions
+
+| Method  | Endpoint                       | Description         |
+| ------- | ------------------------------ | ------------------- |
+| `GET`   | `/api/v1/transactions`         | List transactions   |
+| `POST`  | `/api/v1/transactions`         | Create transaction  |
+| `GET`   | `/api/v1/transactions/{id}`    | Transaction details |
+| `PATCH` | `/api/v1/transactions/{id}`    | Update transaction  |
+| `GET`   | `/api/v1/transactions/summary` | Transaction metrics |
+
+### Risk Intelligence
+
+| Method | Endpoint                            | Description              |
+| ------ | ----------------------------------- | ------------------------ |
+| `POST` | `/api/v1/risk/analyze/{id}`         | Rule-based analysis      |
+| `POST` | `/api/v1/risk/analyze/{id}/ml`      | Hybrid ML analysis       |
+| `GET`  | `/api/v1/risk/analyze/{id}/explain` | Explain risk decision    |
+| `GET`  | `/api/v1/risk/summary`              | Risk distribution        |
+| `GET`  | `/api/v1/risk/trends`               | Risk trends              |
+| `GET`  | `/api/v1/risk/recent`               | Recent decisions         |
+| `GET`  | `/api/v1/risk/events`               | Risk events              |
+| `GET`  | `/api/v1/risk/models`               | Available model versions |
+
+### Analyst Cases
+
+| Method  | Endpoint                     | Description           |
+| ------- | ---------------------------- | --------------------- |
+| `POST`  | `/api/v1/cases`              | Create risk case      |
+| `GET`   | `/api/v1/cases`              | List cases            |
+| `GET`   | `/api/v1/cases/queue`        | Analyst review queue  |
+| `GET`   | `/api/v1/cases/stats`        | Queue statistics      |
+| `GET`   | `/api/v1/cases/{id}`         | Case details          |
+| `PATCH` | `/api/v1/cases/{id}`         | Update case           |
+| `POST`  | `/api/v1/cases/{id}/assign`  | Assign analyst        |
+| `POST`  | `/api/v1/cases/{id}/actions` | Record analyst action |
+| `GET`   | `/api/v1/cases/{id}/actions` | Action history        |
+
+---
+
+# 🚀 Getting Started
+
+## Prerequisites
+
+Make sure you have:
+
+* Python 3.11+
+* Node.js 18+
+* npm
+* Git
+
+---
+
+## 1. Clone the Repository
+
+```bash
+git clone https://github.com/raghuvanshi-sec/Riskora-AI-Powered-Payment-Risk-Fraud-Decisioning-.git
+
+cd Riskora-AI-Powered-Payment-Risk-Fraud-Decisioning-
+```
+
+---
+
+## 2. Backend Setup
 
 ```bash
 cd backend
 
-# Create and activate virtual environment
 python -m venv .venv
-# Windows: .venv\Scripts\activate
-# Linux/macOS: source .venv/bin/activate
+```
 
-# Install dependencies
+### Windows
+
+```powershell
+.venv\Scripts\activate
+```
+
+### Linux / macOS
+
+```bash
+source .venv/bin/activate
+```
+
+Install dependencies:
+
+```bash
 pip install -r requirements.txt
+```
 
-# Copy environment file
+Configure environment variables:
+
+```bash
 cp ../.env.example .env
-# Edit .env: set SECRET_KEY, DATABASE_URL, etc.
+```
 
-# Run the server
+Start the API:
+
+```bash
 uvicorn app.main:app --reload --port 8000
 ```
 
-The database (SQLite by default) and seed data are created automatically on first startup.
+Backend:
 
-### Frontend
+```text
+http://localhost:8000
+```
+
+API documentation:
+
+```text
+http://localhost:8000/docs
+```
+
+---
+
+# 🖥️ Frontend Setup
+
+Open a new terminal:
 
 ```bash
 cd frontend
@@ -183,22 +581,23 @@ npm install
 npm run dev
 ```
 
-Frontend runs on `http://localhost:5173` and proxies `/api` to `http://localhost:8000`.
+Frontend:
 
-### Demo Credentials
+```text
+http://localhost:5173
+```
 
-On first startup, seed data creates:
+The frontend communicates with the FastAPI backend through the `/api` routes.
 
-| Email | Password | Role |
-|-------|----------|------|
-| `admin@airiskmanager.com` | `RiskoraDemo123!` | ADMIN |
+---
 
-### Training the ML Model
+# 🤖 Training the ML Model
 
-The ML model requires training before hybrid scoring is meaningful. Until then, `MockModel` returns 0 probability and the system operates on rules alone.
+The hybrid scoring engine requires a trained model for meaningful ML-based predictions.
 
-```bash
-# In a Python shell with the venv activated:
+A model can be trained using the project's training interface:
+
+```python
 from app.ml.training import train_model, TrainingConfig
 
 config = TrainingConfig(
@@ -206,57 +605,239 @@ config = TrainingConfig(
     max_depth=6,
     learning_rate=0.1,
 )
+
 model, metrics = train_model(config)
+
 print(metrics)
 ```
 
-Activate via: `POST /api/v1/risk/models/{version}/activate`
+After training, the model can be activated through:
 
----
-
-## Environment Variables
-
-| Variable | Default | Description |
-| ---------- | --------- | ------------- |
-| `SECRET_KEY` | *(required)* | JWT signing key |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | `60` | JWT expiry |
-| `DATABASE_URL` | `sqlite:///./airiskmanager.db` | PostgreSQL or SQLite |
-| `BACKEND_CORS_ORIGINS` | `http://localhost:5173` | Allowed CORS origins |
-
----
-
-## Testing
-
-```bash
-# Backend tests (61 tests)
-cd backend
-.venv\Scripts\python.exe -m pytest tests/ -v
-
-# Frontend build
-cd frontend
-npm run build
+```text
+POST /api/v1/risk/models/{version}/activate
 ```
 
 ---
 
-## Security Notes
+# 🔐 Environment Variables
 
-- Passwords hashed with bcrypt via `python-jose`
-- JWT Bearer token authentication
-- Role-based access: `ADMIN`, `RISK_ANALYST`
-- All sensitive operations logged to `audit_logs` table
-- Secrets stored in `.env`, not committed to git
+Create a `.env` file based on `.env.example`.
 
-**Do not use the default `SECRET_KEY` in production.**
+| Variable                      | Default                 | Purpose                  |
+| ----------------------------- | ----------------------- | ------------------------ |
+| `SECRET_KEY`                  | Required                | JWT signing key          |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | `60`                    | JWT expiration           |
+| `DATABASE_URL`                | SQLite                  | Database connection      |
+| `BACKEND_CORS_ORIGINS`        | `http://localhost:5173` | Allowed frontend origins |
+
+### Production Security
+
+Never commit:
+
+```text
+.env
+API keys
+Database credentials
+Private keys
+Production secrets
+```
+
+Use a strong, unique production `SECRET_KEY`.
 
 ---
 
-## Deployment Prerequisites (not included in this codebase)
+# 🧪 Testing
 
-- [ ] Replace `SECRET_KEY` with a production value
-- [ ] Configure PostgreSQL (remove SQLite)
-- [ ] Train and deploy ML model artifact
-- [ ] Install `shap` library for full explainability
-- [ ] Set production CORS origins
-- [ ] Configure reverse proxy (nginx) + HTTPS
-- [ ] Set up CI/CD pipeline
+Backend tests:
+
+```bash
+cd backend
+
+python -m pytest tests/ -v
+```
+
+Frontend production build:
+
+```bash
+cd frontend
+
+npm run build
+```
+
+The project includes backend test coverage for core API and risk-management functionality.
+
+---
+
+# 📊 Data Strategy
+
+Riskora's ML experimentation uses transaction-fraud datasets such as the **IEEE-CIS Fraud Detection dataset**.
+
+Large raw datasets are intentionally **not stored inside this Git repository**.
+
+This keeps the repository:
+
+* Lightweight
+* GitHub-compatible
+* Faster to clone
+* Easier to maintain
+* Free from unnecessary large binary/data history
+
+For reproducible ML experiments, datasets should be downloaded separately and placed under:
+
+```text
+data/
+└── ieee_cis/
+```
+
+---
+
+# 🛡️ Security Architecture
+
+Riskora implements several security controls:
+
+```mermaid
+flowchart TD
+
+    REQUEST[Incoming Request]
+
+    AUTH[JWT Authentication]
+
+    RBAC[Role-Based Access Control]
+
+    VALIDATE[Request Validation]
+
+    SERVICE[Business Logic]
+
+    AUDIT[Audit Logging]
+
+    DB[(Database)]
+
+    REQUEST --> AUTH
+    AUTH --> RBAC
+    RBAC --> VALIDATE
+    VALIDATE --> SERVICE
+    SERVICE --> DB
+    SERVICE --> AUDIT
+```
+
+Security features include:
+
+* JWT Bearer authentication
+* Password hashing
+* Role-based authorization
+* Protected endpoints
+* Environment-based secrets
+* Audit logging
+* Input validation
+* Separation between API, service, and data layers
+
+---
+
+# 📈 Product Workflow
+
+Riskora is designed around the workflow of a payment-risk operations team.
+
+```mermaid
+Transaction
+     │
+     ▼
+Feature Extraction
+     │
+     ├───────────────┐
+     ▼               ▼
+Rules Engine      ML Model
+     │               │
+     └───────┬───────┘
+             ▼
+      Hybrid Risk Score
+             │
+             ▼
+       Risk Classification
+             │
+      ┌──────┼───────┐
+      ▼      ▼       ▼
+    ALLOW  REVIEW   BLOCK
+             │
+             ▼
+       Risk Case Queue
+             │
+             ▼
+       Analyst Decision
+             │
+             ▼
+        Audit Trail
+```
+
+---
+
+# 🗺️ Current Development Status
+
+| Component              | Status                                  |
+| ---------------------- | --------------------------------------- |
+| React Dashboard        | ✅ Implemented                           |
+| FastAPI Backend        | ✅ Implemented                           |
+| JWT Authentication     | ✅ Implemented                           |
+| RBAC                   | ✅ Implemented                           |
+| Transaction Management | ✅ Implemented                           |
+| Rule-Based Risk Engine | ✅ Implemented                           |
+| XGBoost Integration    | ✅ Implemented                           |
+| Hybrid Risk Scoring    | ✅ Implemented                           |
+| SHAP Explainability    | ✅ Implemented                           |
+| Risk Case Management   | ✅ Implemented                           |
+| Analyst Workflow       | ✅ Implemented                           |
+| Audit Logging          | ✅ Implemented                           |
+| Model Registry         | ✅ Implemented                           |
+| Production Deployment  | 🔄 Deployment configuration required    |
+| Production ML Training | 🔄 Requires trained production artifact |
+
+---
+
+# 🔭 Future Roadmap
+
+Potential extensions include:
+
+* Real-time payment gateway integration
+* Streaming transaction analysis
+* Advanced behavioral profiling
+* Device fingerprint intelligence
+* Graph-based fraud detection
+* Adaptive fraud thresholds
+* Model drift monitoring
+* Automated model retraining
+* Advanced anomaly detection
+* Production-grade PostgreSQL deployment
+* CI/CD and automated security testing
+* Payment-provider integrations
+
+---
+
+# 💡 Why Riskora?
+
+Riskora is built around a simple principle:
+
+> **Fraud detection should not only identify risk — it should help teams understand, investigate, and act on that risk.**
+
+By combining deterministic rules, machine learning, explainable AI, and analyst operations into one platform, Riskora moves beyond a simple fraud-classification model toward a complete **payment risk decisioning workflow**.
+
+---
+
+## 📜 License
+
+This project is intended for educational, research, portfolio, and demonstration purposes.
+
+See the repository license for applicable usage terms.
+
+---
+
+## 👨‍💻 Author
+
+**Satyam Raghuvanshi**
+
+Full-Stack Developer • AI/ML • FinTech • Cybersecurity
+
+---
+
+<p align="center">
+  <b>Riskora</b><br>
+  AI-Powered Payment Risk & Fraud Decisioning
+</p>
