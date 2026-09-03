@@ -691,4 +691,10 @@ a.sidebar-logo:hover {
   }
 
   .page-subtitle {
-    font-si
+    font-size: 13px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+}
