@@ -264,7 +264,7 @@ If a trained model is unavailable, the system can fall back to rules-based scori
 
 ---
 
-# 🔍 Explainable AI
+#🔍Explainable AI
 
 Riskora is designed to answer not only:
 
@@ -768,32 +768,7 @@ Rules Engine      ML Model
         Audit Trail
 ```
 
----
-
-# 🗺️ Current Development Status
-
-| Component              | Status                                  |
-| ---------------------- | --------------------------------------- |
-| React Dashboard        | ✅ Implemented                           |
-| FastAPI Backend        | ✅ Implemented                           |
-| JWT Authentication     | ✅ Implemented                           |
-| RBAC                   | ✅ Implemented                           |
-| Transaction Management | ✅ Implemented                           |
-| Rule-Based Risk Engine | ✅ Implemented                           |
-| XGBoost Integration    | ✅ Implemented                           |
-| Hybrid Risk Scoring    | ✅ Implemented                           |
-| SHAP Explainability    | ✅ Implemented                           |
-| Risk Case Management   | ✅ Implemented                           |
-| Analyst Workflow       | ✅ Implemented                           |
-| Audit Logging          | ✅ Implemented                           |
-| Model Registry         | ✅ Implemented                           |
-| Production Deployment  | 🔄 Deployment configuration required    |
-| Production ML Training | 🔄 Requires trained production artifact |
-
----
-
 # 🔭 Future Roadmap
-
 Potential extensions include:
 
 * Real-time payment gateway integration
@@ -812,7 +787,6 @@ Potential extensions include:
 ---
 
 # 💡 Why Riskora?
-
 Riskora is built around a simple principle:
 
 > **Fraud detection should not only identify risk — it should help teams understand, investigate, and act on that risk.**
@@ -832,7 +806,6 @@ See the repository license for applicable usage terms.
 ## 👨‍💻 Author
 
 **Satyam Raghuvanshi**
-
 Full-Stack Developer • AI/ML • FinTech • Cybersecurity
 
 ---
