@@ -9,6 +9,7 @@ import ExposureSection from '../components/landing/ExposureSection';
 import ActionsSection from '../components/landing/ActionsSection';
 import MetricsSection from '../components/landing/MetricsSection';
 import ArchitectureSection from '../components/landing/ArchitectureSection';
+import RiskDecisionSimulator from '../components/landing/RiskDecisionSimulator';
 import Footer from '../components/landing/Footer';
 
 export default function LandingView() {
@@ -24,6 +25,7 @@ export default function LandingView() {
         <ActionsSection />
         <MetricsSection />
         <ArchitectureSection />
+        <RiskDecisionSimulator />
       </main>
       <Footer />
     </div>

@@ -15,3 +15,9 @@ export const getAllRiskEvents = (params = {}) =>
 export const getRiskSummary = () => api.get("/risk/summary");
 
 export const getRiskHealth = () => api.get("/risk/health");
+
+export const getMlExplain = (transactionId) =>
+  api.get(`/risk/analyze/${transactionId}/explain`);
+
+export const runMlAnalysis = (transactionId) =>
+  api.post(`/risk/analyze/${transactionId}/ml`);

@@ -14,6 +14,7 @@ from app.schemas.risk_api import (
     RiskTrendItem,
     ExplainableAnalysisResponse,
     SHAPFactorResponse,
+    SimulatorTransactionInput,
 )
 from app.services import risk_service
 from app.services.audit_service import log_audit
@@ -336,4 +337,71 @@ def explain_transaction(
         rules_engine_version=result.rules_engine_version,
         ml_model_version=result.ml_model_version,
         shap_available=result.shap_available,
+        inference_time_ms=result.inference_time_ms,
+        feature_count=result.feature_count,
+    )
+
+
+@router.post(
+    "/risk/simulator",
+    response_model=ExplainableAnalysisResponse,
+    tags=["risk"],
+)
+def simulate_transaction(
+    input: SimulatorTransactionInput,
+):
+    result = risk_service.simulate_transaction_analysis(
+        amount=input.amount,
+        currency=input.currency,
+        payment_method=input.payment_method,
+        merchant_name=input.merchant_name,
+        transaction_type=input.transaction_type,
+        account_age_days=input.account_age_days,
+        transactions_per_hour=input.transactions_per_hour,
+        failed_attempts=input.failed_attempts,
+        device_changed=input.device_changed,
+        location_changed=input.location_changed,
+        merchant_risk=input.merchant_risk,
+    )
+
+    rules_factors = [
+        RiskFactorResponse(
+            code=f.code,
+            name=f.name,
+            description=f.description,
+            severity=f.severity,
+            contribution=f.contribution,
+        )
+        for f in result.rules_factors
+    ]
+    shap_factors = [
+        SHAPFactorResponse(
+            feature_name=f.feature_name,
+            feature_value=f.feature_value,
+            contribution=f.contribution,
+            direction=f.direction,
+        )
+        for f in result.shap_factors
+    ]
+
+    return ExplainableAnalysisResponse(
+        transaction_id=0,
+        final_score=result.final_score,
+        final_level=result.final_level,
+        final_decision=result.final_decision,
+        rules_score=result.rules_score,
+        rules_level=result.rules_level,
+        rules_decision=result.rules_decision,
+        ml_score=result.ml_score,
+        ml_level=result.ml_level,
+        ml_decision=result.ml_decision,
+        ml_probability=result.ml_probability,
+        rules_factors=rules_factors,
+        shap_factors=shap_factors,
+        explanation=result.explanation,
+        rules_engine_version=result.rules_engine_version,
+        ml_model_version=result.ml_model_version,
+        shap_available=result.shap_available,
+        inference_time_ms=result.inference_time_ms,
+        feature_count=result.feature_count,
     )

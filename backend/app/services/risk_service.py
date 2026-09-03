@@ -1,7 +1,10 @@
+import logging
 from datetime import datetime, date
 from typing import List, Optional, Tuple
 from sqlalchemy.orm import Session, selectinload
 from sqlalchemy import func, desc
+
+logger = logging.getLogger(__name__)
 
 from app.models.transaction import Transaction
 from app.models.risk import RiskAssessment, RiskEvent
@@ -368,7 +371,11 @@ def re_analyze_transaction(db: Session, transaction_id: int) -> Optional[RiskAss
 
 
 def analyze_transaction_explainable(db: Session, transaction_id: int):
+    import time
     from app.risk.explainable import ExplainableRiskResult, build_explainable_result
+    
+    overall_start = time.perf_counter()
+    
     tx = db.query(Transaction).filter(Transaction.id == transaction_id).first()
     if not tx:
         return None
@@ -392,6 +399,9 @@ def analyze_transaction_explainable(db: Session, transaction_id: int):
     rules_result = rules_engine.analyze(signals)
 
     hybrid_engine = _get_hybrid_engine()
+    inference_time_ms = 0.0
+    feature_count = 0
+    
     if hybrid_engine:
         hybrid_result = hybrid_engine.analyze(
             amount=tx.amount,
@@ -407,6 +417,9 @@ def analyze_transaction_explainable(db: Session, transaction_id: int):
             device_id=tx.device_id,
             location=tx.location,
         )
+        inference_time_ms = hybrid_result.inference_time_ms
+        feature_count = hybrid_result.feature_count
+        
         model = None
         if _ML_AVAILABLE:
             from app.ml.models import get_model
@@ -441,6 +454,8 @@ def analyze_transaction_explainable(db: Session, transaction_id: int):
             final_decision: str
             model_version: str
             rules_engine_version: str = "rules-v1"
+            inference_time_ms: float = 0.0
+            feature_count: int = 0
         hybrid_result = FallbackHybridResult(
             rules_score=rules_result.risk_score,
             rules_level=rules_result.risk_level,
@@ -454,6 +469,8 @@ def analyze_transaction_explainable(db: Session, transaction_id: int):
             final_decision=rules_result.decision,
             model_version="none",
             rules_engine_version="rules-v1",
+            inference_time_ms=0.0,
+            feature_count=0,
         )
         from app.ml.shap_explainer import SHAPValues
         shap_values = SHAPValues(
@@ -465,4 +482,175 @@ def analyze_transaction_explainable(db: Session, transaction_id: int):
             available=False,
         )
 
-    return build_explainable_result(rules_result, hybrid_result, shap_values)
+    total_time_ms = (time.perf_counter() - overall_start) * 1000
+    
+    result = build_explainable_result(
+        rules_result, 
+        hybrid_result, 
+        shap_values,
+        inference_time_ms=inference_time_ms if inference_time_ms > 0 else total_time_ms,
+        feature_count=feature_count if feature_count > 0 else len(signals)
+    )
+    
+    logger.info(
+        f"[ML INFERENCE] Transaction: TX-{transaction_id} "
+        f"Model: {result.ml_model_version} "
+        f"Engine: XGBoost "
+        f"Features: {result.feature_count} "
+        f"Fraud Probability: {result.ml_probability:.4f} "
+        f"Inference Time: {result.inference_time_ms:.2f}ms "
+        f"SHAP: {'generated' if result.shap_available else 'unavailable'} "
+        f"Hybrid Score: {result.final_score} "
+        f"Decision: {result.final_decision}"
+    )
+
+    return result
+
+
+def simulate_transaction_analysis(
+    amount: float,
+    currency: str,
+    payment_method: str,
+    merchant_name: str,
+    transaction_type: str,
+    account_age_days: int,
+    transactions_per_hour: int,
+    failed_attempts: int,
+    device_changed: bool,
+    location_changed: bool,
+    merchant_risk: float,
+):
+    import time
+    from app.risk.explainable import ExplainableRiskResult, build_explainable_result
+    from app.risk.engine import RulesRiskEngine
+    from app.risk.feature_extractor import extract_signals
+
+    overall_start = time.perf_counter()
+
+    signals = extract_signals(
+        amount=amount,
+        currency=currency,
+        previous_transaction_amount=amount * 0.8,
+        transaction_frequency=transactions_per_hour,
+        failed_attempts=failed_attempts,
+        device_change=1 if device_changed else 0,
+        location_change=1 if location_changed else 0,
+        merchant_risk=merchant_risk,
+        velocity=transactions_per_hour,
+        account_age_days=account_age_days,
+        device_id="simulator",
+        location="Simulator",
+    )
+
+    rules_engine = RulesRiskEngine()
+    rules_result = rules_engine.analyze(signals)
+
+    hybrid_engine = _get_hybrid_engine()
+    inference_time_ms = 0.0
+    feature_count = 0
+
+    if hybrid_engine:
+        hybrid_result = hybrid_engine.analyze(
+            amount=amount,
+            currency=currency,
+            previous_transaction_amount=amount * 0.8,
+            transaction_frequency=transactions_per_hour,
+            failed_attempts=failed_attempts,
+            device_change=1 if device_changed else 0,
+            location_change=1 if location_changed else 0,
+            merchant_risk=merchant_risk,
+            velocity=transactions_per_hour,
+            account_age_days=account_age_days,
+            device_id="simulator",
+            location="Simulator",
+        )
+        inference_time_ms = hybrid_result.inference_time_ms
+        feature_count = hybrid_result.feature_count
+
+        model = None
+        if _ML_AVAILABLE:
+            from app.ml.models import get_model
+            model = get_model()
+        shap_values = explain_transaction(
+            model=model,
+            amount=amount,
+            account_age_days=account_age_days,
+            previous_transaction_amount=amount * 0.8,
+            transaction_frequency=transactions_per_hour,
+            failed_attempts=failed_attempts,
+            device_change=1 if device_changed else 0,
+            location_change=1 if location_changed else 0,
+            merchant_risk=merchant_risk,
+            velocity=transactions_per_hour,
+            model_version=hybrid_result.model_version,
+        )
+    else:
+        from app.ml.hybrid import HybridRiskResult
+        from dataclasses import dataclass
+
+        @dataclass
+        class FallbackHybridResult:
+            rules_score: int
+            rules_level: str
+            rules_decision: str
+            ml_score: int
+            ml_level: str
+            ml_decision: str
+            ml_probability: float
+            final_score: int
+            final_level: str
+            final_decision: str
+            model_version: str
+            rules_engine_version: str = "rules-v1"
+            inference_time_ms: float = 0.0
+            feature_count: int = 0
+
+        hybrid_result = FallbackHybridResult(
+            rules_score=rules_result.risk_score,
+            rules_level=rules_result.risk_level,
+            rules_decision=rules_result.decision,
+            ml_score=0,
+            ml_level="LOW",
+            ml_decision="ALLOW",
+            ml_probability=0.0,
+            final_score=rules_result.risk_score,
+            final_level=rules_result.risk_level,
+            final_decision=rules_result.decision,
+            model_version="none",
+            rules_engine_version="rules-v1",
+            inference_time_ms=0.0,
+            feature_count=0,
+        )
+        from app.ml.shap_explainer import SHAPValues
+
+        shap_values = SHAPValues(
+            base_value=0.0,
+            feature_values={},
+            shap_values={},
+            feature_contributions=[],
+            model_version="none",
+            available=False,
+        )
+
+    total_time_ms = (time.perf_counter() - overall_start) * 1000
+
+    result = build_explainable_result(
+        rules_result,
+        hybrid_result,
+        shap_values,
+        inference_time_ms=inference_time_ms if inference_time_ms > 0 else total_time_ms,
+        feature_count=feature_count if feature_count > 0 else len(signals),
+    )
+
+    logger.info(
+        f"[SIMULATOR] Amount: {amount} {currency} "
+        f"Model: {result.ml_model_version} "
+        f"Features: {result.feature_count} "
+        f"Fraud Probability: {result.ml_probability:.4f} "
+        f"Inference Time: {result.inference_time_ms:.2f}ms "
+        f"SHAP: {'generated' if result.shap_available else 'unavailable'} "
+        f"Hybrid Score: {result.final_score} "
+        f"Decision: {result.final_decision}"
+    )
+
+    return result

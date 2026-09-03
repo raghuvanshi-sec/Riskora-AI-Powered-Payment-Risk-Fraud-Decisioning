@@ -4,6 +4,7 @@ import { getTransaction } from '../services/transactionService';
 import { getTransactionRisk, getRiskHistory, getRiskEvents } from '../services/riskService';
 import { getCase, takeCaseAction } from '../services/riskOpsService';
 import { EmptyState, ErrorState, DetailSkeleton } from '../components';
+import ModelIntelligence from '../components/ModelIntelligence';
 
 const fmtINR = (v) =>
   new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(v);
@@ -40,6 +41,42 @@ export default function TransactionDetail() {
   const [actionReason, setActionReason] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
   const [actionMsg, setActionMsg] = useState(null);
+
+  const handleRiskResult = (mlResult) => {
+    if (!mlResult) return;
+    const unifiedRisk = {
+      risk_score: mlResult.final_score,
+      risk_level: mlResult.final_level,
+      decision: mlResult.final_decision,
+      ml_score: mlResult.ml_score,
+      rule_score: mlResult.rules_score,
+      ml_probability: mlResult.ml_probability,
+      explanation: mlResult.explanation,
+      shap_factors: mlResult.shap_factors,
+      rules_factors: mlResult.rules_factors,
+      triggered_rules: mlResult.rules_factors,
+      top_positive_features: mlResult.shap_factors?.filter(f => f.contribution > 0) || [],
+      top_negative_features: mlResult.shap_factors?.filter(f => f.contribution < 0) || [],
+      inference_time_ms: mlResult.inference_time_ms,
+      model_version: mlResult.ml_model_version,
+      shap_available: mlResult.shap_available,
+    };
+    setRisk(unifiedRisk);
+
+    if (process.env.NODE_ENV === 'development') {
+      const assessmentScore = unifiedRisk.risk_score;
+      const miScore = mlResult.final_score;
+      if (assessmentScore !== miScore) {
+        console.warn('[Riskora Consistency] Risk Assessment score !== Model Intelligence hybrid score:', assessmentScore, 'vs', miScore);
+      }
+      if (unifiedRisk.decision !== mlResult.final_decision) {
+        console.warn('[Riskora Consistency] Risk Assessment decision !== Model Intelligence decision:', unifiedRisk.decision, 'vs', mlResult.final_decision);
+      }
+      if (unifiedRisk.risk_level !== mlResult.final_level) {
+        console.warn('[Riskora Consistency] Risk Assessment level !== Model Intelligence level:', unifiedRisk.risk_level, 'vs', mlResult.final_level);
+      }
+    }
+  };
 
   useEffect(() => {
     let active = true;
@@ -256,8 +293,10 @@ export default function TransactionDetail() {
                 </p>
               )}
             </div>
-          )}
-        </section>
+            )}
+          </section>
+
+        <ModelIntelligence transactionId={transactionId} onRiskResult={handleRiskResult} riskResult={risk} />
 
         {risk && (risk.triggered_rules?.length > 0 || risk.top_positive_features?.length > 0 || risk.top_negative_features?.length > 0) && (
           <section className="card detail-block">

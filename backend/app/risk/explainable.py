@@ -42,6 +42,8 @@ class ExplainableRiskResult:
     rules_engine_version: str
     ml_model_version: str
     shap_available: bool
+    inference_time_ms: float = 0.0
+    feature_count: int = 0
 
 
 def rule_factors_to_explanation(factors: List[RiskFactor]) -> List[RuleFactorExplanation]:
@@ -112,6 +114,8 @@ def build_explainable_result(
     rules_result: RulesRiskResult,
     hybrid_result: HybridRiskResult,
     shap_values: SHAPValues,
+    inference_time_ms: float = 0.0,
+    feature_count: int = 0,
 ) -> ExplainableRiskResult:
     rules_factors = rule_factors_to_explanation(rules_result.risk_factors)
     shap_factors = shap_to_explanation(shap_values)
@@ -141,4 +145,6 @@ def build_explainable_result(
         rules_engine_version=hybrid_result.rules_engine_version,
         ml_model_version=hybrid_result.model_version,
         shap_available=shap_values.available,
+        inference_time_ms=inference_time_ms,
+        feature_count=feature_count,
     )
