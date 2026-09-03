@@ -1,0 +1,108 @@
+{
+  "dataset": "ieee_cis",
+  "training_rows": 472432,
+  "validation_rows": 118108,
+  "positive_training": 16599,
+  "negative_training": 455833,
+  "positive_validation": 4064,
+  "negative_validation": 114044,
+  "training_time_range": [
+    86400.0,
+    12192842.0
+  ],
+  "validation_time_range": [
+    12192900.0,
+    15811131.0
+  ],
+  "models": {
+    "logistic_regression": {
+      "metrics": {
+        "pr_auc": 0.11411570115025013,
+        "roc_auc": 0.7455323095699767,
+        "precision": 0.05009077523480051,
+        "recall": 0.8622047244094488,
+        "f1": 0.09468095167326425,
+        "accuracy": 0.43264639143834455,
+        "confusion_matrix": [
+          [
+            47595,
+            66449
+          ],
+          [
+            560,
+            3504
+          ]
+        ],
+        "training_time": 105.7977499961853
+      },
+      "parameters": {
+        "max_iter": 1000,
+        "class_weight": "balanced",
+        "solver": "lbfgs",
+        "random_state": 42
+      }
+    },
+    "random_forest": {
+      "metrics": {
+        "pr_auc": 0.44274767251887137,
+        "roc_auc": 0.885545861029049,
+        "precision": 0.28468627698522914,
+        "recall": 0.5548720472440944,
+        "f1": 0.3763037129745515,
+        "accuracy": 0.936710468384868,
+        "confusion_matrix": [
+          [
+            108378,
+            5666
+          ],
+          [
+            1809,
+            2255
+          ]
+        ],
+        "training_time": 99.851726770401
+      },
+      "parameters": {
+        "n_estimators": 200,
+        "max_depth": 15,
+        "min_samples_split": 10,
+        "min_samples_leaf": 5,
+        "class_weight": "balanced_subsample",
+        "random_state": 42
+      }
+    },
+    "xgboost": {
+      "metrics": {
+        "pr_auc": 0.48318274163554376,
+        "roc_auc": 0.9025938347856208,
+        "precision": 0.2155108679580068,
+        "recall": 0.7172736220472441,
+        "f1": 0.33143831722569644,
+        "accuracy": 0.9004301148101738,
+        "confusion_matrix": [
+          [
+            103433,
+            10611
+          ],
+          [
+            1149,
+            2915
+          ]
+        ],
+        "training_time": 11.669948816299438
+      },
+      "parameters": {
+        "n_estimators": 200,
+        "max_depth": 6,
+        "learning_rate": 0.1,
+        "subsample": 0.8,
+        "colsample_bytree": 0.8,
+        "scale_pos_weight": 27.46147358274595,
+        "random_state": 42
+      }
+    }
+  },
+  "selected_model": "xgboost",
+  "selection_metric": "PR-AUC",
+  "selection_reason": "Highest validation PR-AUC (0.4832) among all trained models"
+}

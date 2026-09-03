@@ -1,0 +1,84 @@
+{
+  "model": "xgboost",
+  "model_version": "risk_model_v1",
+  "preprocessor_version": "v1",
+  "ml_weight": 0.7,
+  "rule_weight": 0.3,
+  "low_threshold": 30,
+  "high_threshold": 70,
+  "test_transaction_count": 5,
+  "results": [
+    {
+      "transaction_index": 0,
+      "ml_probability": 0.05023527517914772,
+      "ml_score": 5.023527517914772,
+      "rule_score": 20.0,
+      "risk_score": 9.51646926254034,
+      "risk_level": "LOW",
+      "decision": "ALLOW",
+      "triggered_rules": [
+        "RULE_MISSING_BILLING_EMAIL",
+        "RULE_MISSING_DEVICE",
+        "RULE_MISSING_DEVICE_INFO"
+      ],
+      "validation_passed": true
+    },
+    {
+      "transaction_index": 1,
+      "ml_probability": 0.038035400211811066,
+      "ml_score": 3.8035400211811066,
+      "rule_score": 15.0,
+      "risk_score": 7.162478014826775,
+      "risk_level": "LOW",
+      "decision": "ALLOW",
+      "triggered_rules": [
+        "RULE_MISSING_DEVICE",
+        "RULE_MISSING_DEVICE_INFO"
+      ],
+      "validation_passed": true
+    },
+    {
+      "transaction_index": 2,
+      "ml_probability": 0.3769543170928955,
+      "ml_score": 37.69543170928955,
+      "rule_score": 15.0,
+      "risk_score": 30.886802196502686,
+      "risk_level": "MEDIUM",
+      "decision": "REVIEW",
+      "triggered_rules": [
+        "RULE_MISSING_DEVICE",
+        "RULE_MISSING_DEVICE_INFO"
+      ],
+      "validation_passed": true
+    },
+    {
+      "transaction_index": 3,
+      "ml_probability": 0.07829474657773972,
+      "ml_score": 7.829474657773972,
+      "rule_score": 15.0,
+      "risk_score": 9.98063226044178,
+      "risk_level": "LOW",
+      "decision": "ALLOW",
+      "triggered_rules": [
+        "RULE_MISSING_DEVICE",
+        "RULE_MISSING_DEVICE_INFO"
+      ],
+      "validation_passed": true
+    },
+    {
+      "transaction_index": 4,
+      "ml_probability": 0.11845792084932327,
+      "ml_score": 11.845792084932327,
+      "rule_score": 15.0,
+      "risk_score": 12.792054459452629,
+      "risk_level": "LOW",
+      "decision": "ALLOW",
+      "triggered_rules": [
+        "RULE_MISSING_DEVICE",
+        "RULE_MISSING_DEVICE_INFO"
+      ],
+      "validation_passed": true
+    }
+  ],
+  "validation_status": "PASSED"
+}

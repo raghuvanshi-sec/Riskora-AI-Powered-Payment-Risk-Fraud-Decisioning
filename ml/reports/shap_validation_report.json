@@ -1,0 +1,9 @@
+{
+  "model_probability": 0.02625446766614914,
+  "base_value": 0.04514969140291214,
+  "shap_sum": -3.6584628742493805,
+  "reconstructed_output": -3.6133131828464684,
+  "reconstruction_error": 6.549653033260938e-07,
+  "prediction_consistency": true,
+  "validation_status": "PASSED"
+}

@@ -1,0 +1,397 @@
+{
+  "dataset": "ieee_cis",
+  "model": "xgboost",
+  "sample_size": 1000,
+  "feature_importance": [
+    {
+      "transformed_name": "num__C1",
+      "original_name": "C1",
+      "mean_abs_shap": 0.2782832086086273,
+      "rank": 1
+    },
+    {
+      "transformed_name": "num__C5",
+      "original_name": "C5",
+      "mean_abs_shap": 0.27175986766815186,
+      "rank": 2
+    },
+    {
+      "transformed_name": "num__transaction_time",
+      "original_name": "transaction_time",
+      "mean_abs_shap": 0.25947675108909607,
+      "rank": 3
+    },
+    {
+      "transformed_name": "num__amount",
+      "original_name": "amount",
+      "mean_abs_shap": 0.2428220510482788,
+      "rank": 4
+    },
+    {
+      "transformed_name": "num__C13",
+      "original_name": "C13",
+      "mean_abs_shap": 0.23585346341133118,
+      "rank": 5
+    },
+    {
+      "transformed_name": "cat__M4",
+      "original_name": "M4",
+      "mean_abs_shap": 0.20979519188404083,
+      "rank": 6
+    },
+    {
+      "transformed_name": "num__C14",
+      "original_name": "C14",
+      "mean_abs_shap": 0.20539425313472748,
+      "rank": 7
+    },
+    {
+      "transformed_name": "num__card1",
+      "original_name": "card1",
+      "mean_abs_shap": 0.20368577539920807,
+      "rank": 8
+    },
+    {
+      "transformed_name": "num__D3",
+      "original_name": "D3",
+      "mean_abs_shap": 0.19059522449970245,
+      "rank": 9
+    },
+    {
+      "transformed_name": "num__card2",
+      "original_name": "card2",
+      "mean_abs_shap": 0.18210648000240326,
+      "rank": 10
+    },
+    {
+      "transformed_name": "num__card5",
+      "original_name": "card5",
+      "mean_abs_shap": 0.170301154255867,
+      "rank": 11
+    },
+    {
+      "transformed_name": "num__D2",
+      "original_name": "D2",
+      "mean_abs_shap": 0.13774214684963226,
+      "rank": 12
+    },
+    {
+      "transformed_name": "num__C2",
+      "original_name": "C2",
+      "mean_abs_shap": 0.1369398981332779,
+      "rank": 13
+    },
+    {
+      "transformed_name": "cat__M6",
+      "original_name": "M6",
+      "mean_abs_shap": 0.13196970522403717,
+      "rank": 14
+    },
+    {
+      "transformed_name": "num__C8",
+      "original_name": "C8",
+      "mean_abs_shap": 0.12979207932949066,
+      "rank": 15
+    },
+    {
+      "transformed_name": "cat__M5",
+      "original_name": "M5",
+      "mean_abs_shap": 0.1257725954055786,
+      "rank": 16
+    },
+    {
+      "transformed_name": "cat__P_emaildomain",
+      "original_name": "P_emaildomain",
+      "mean_abs_shap": 0.11232951283454895,
+      "rank": 17
+    },
+    {
+      "transformed_name": "num__C11",
+      "original_name": "C11",
+      "mean_abs_shap": 0.10761910676956177,
+      "rank": 18
+    },
+    {
+      "transformed_name": "num__D1",
+      "original_name": "D1",
+      "mean_abs_shap": 0.10564392060041428,
+      "rank": 19
+    },
+    {
+      "transformed_name": "num__D15",
+      "original_name": "D15",
+      "mean_abs_shap": 0.0992526262998581,
+      "rank": 20
+    },
+    {
+      "transformed_name": "num__C4",
+      "original_name": "C4",
+      "mean_abs_shap": 0.09593519568443298,
+      "rank": 21
+    },
+    {
+      "transformed_name": "num__C6",
+      "original_name": "C6",
+      "mean_abs_shap": 0.08699532598257065,
+      "rank": 22
+    },
+    {
+      "transformed_name": "num__addr1",
+      "original_name": "addr1",
+      "mean_abs_shap": 0.084283746778965,
+      "rank": 23
+    },
+    {
+      "transformed_name": "num__D4",
+      "original_name": "D4",
+      "mean_abs_shap": 0.08419732749462128,
+      "rank": 24
+    },
+    {
+      "transformed_name": "num__C9",
+      "original_name": "C9",
+      "mean_abs_shap": 0.07846105098724365,
+      "rank": 25
+    },
+    {
+      "transformed_name": "cat__product_code",
+      "original_name": "product_code",
+      "mean_abs_shap": 0.06820570677518845,
+      "rank": 26
+    },
+    {
+      "transformed_name": "num__D8",
+      "original_name": "D8",
+      "mean_abs_shap": 0.06141376495361328,
+      "rank": 27
+    },
+    {
+      "transformed_name": "num__D10",
+      "original_name": "D10",
+      "mean_abs_shap": 0.05483202636241913,
+      "rank": 28
+    },
+    {
+      "transformed_name": "cat__R_emaildomain",
+      "original_name": "R_emaildomain",
+      "mean_abs_shap": 0.051246631890535355,
+      "rank": 29
+    },
+    {
+      "transformed_name": "num__transaction_hour",
+      "original_name": "transaction_hour",
+      "mean_abs_shap": 0.04415346309542656,
+      "rank": 30
+    },
+    {
+      "transformed_name": "cat__M7",
+      "original_name": "M7",
+      "mean_abs_shap": 0.04405836760997772,
+      "rank": 31
+    },
+    {
+      "transformed_name": "num__amount_log",
+      "original_name": "amount_log",
+      "mean_abs_shap": 0.0427209734916687,
+      "rank": 32
+    },
+    {
+      "transformed_name": "num__C12",
+      "original_name": "C12",
+      "mean_abs_shap": 0.03897105157375336,
+      "rank": 33
+    },
+    {
+      "transformed_name": "num__card3",
+      "original_name": "card3",
+      "mean_abs_shap": 0.0384475439786911,
+      "rank": 34
+    },
+    {
+      "transformed_name": "cat__DeviceType",
+      "original_name": "DeviceType",
+      "mean_abs_shap": 0.03809400647878647,
+      "rank": 35
+    },
+    {
+      "transformed_name": "num__transaction_day",
+      "original_name": "transaction_day",
+      "mean_abs_shap": 0.036774761974811554,
+      "rank": 36
+    },
+    {
+      "transformed_name": "num__D5",
+      "original_name": "D5",
+      "mean_abs_shap": 0.03461156412959099,
+      "rank": 37
+    },
+    {
+      "transformed_name": "cat__M3",
+      "original_name": "M3",
+      "mean_abs_shap": 0.033892467617988586,
+      "rank": 38
+    },
+    {
+      "transformed_name": "cat__DeviceInfo",
+      "original_name": "DeviceInfo",
+      "mean_abs_shap": 0.029359089210629463,
+      "rank": 39
+    },
+    {
+      "transformed_name": "num__D11",
+      "original_name": "D11",
+      "mean_abs_shap": 0.020053423941135406,
+      "rank": 40
+    },
+    {
+      "transformed_name": "cat__M1",
+      "original_name": "M1",
+      "mean_abs_shap": 0.019762815907597542,
+      "rank": 41
+    },
+    {
+      "transformed_name": "num__C3",
+      "original_name": "C3",
+      "mean_abs_shap": 0.014385287649929523,
+      "rank": 42
+    },
+    {
+      "transformed_name": "cat__M9",
+      "original_name": "M9",
+      "mean_abs_shap": 0.014030206948518753,
+      "rank": 43
+    },
+    {
+      "transformed_name": "num__C10",
+      "original_name": "C10",
+      "mean_abs_shap": 0.011017470620572567,
+      "rank": 44
+    },
+    {
+      "transformed_name": "num__V10",
+      "original_name": "V10",
+      "mean_abs_shap": 0.008585818111896515,
+      "rank": 45
+    },
+    {
+      "transformed_name": "num__V2",
+      "original_name": "V2",
+      "mean_abs_shap": 0.008464307524263859,
+      "rank": 46
+    },
+    {
+      "transformed_name": "num__D13",
+      "original_name": "D13",
+      "mean_abs_shap": 0.007925068028271198,
+      "rank": 47
+    },
+    {
+      "transformed_name": "cat__M2",
+      "original_name": "M2",
+      "mean_abs_shap": 0.0075846645049750805,
+      "rank": 48
+    },
+    {
+      "transformed_name": "num__V5",
+      "original_name": "V5",
+      "mean_abs_shap": 0.00655727181583643,
+      "rank": 49
+    },
+    {
+      "transformed_name": "num__C7",
+      "original_name": "C7",
+      "mean_abs_shap": 0.005555473733693361,
+      "rank": 50
+    },
+    {
+      "transformed_name": "num__transaction_day_of_week",
+      "original_name": "transaction_day_of_week",
+      "mean_abs_shap": 0.005452738609164953,
+      "rank": 51
+    },
+    {
+      "transformed_name": "num__D14",
+      "original_name": "D14",
+      "mean_abs_shap": 0.0048958901315927505,
+      "rank": 52
+    },
+    {
+      "transformed_name": "cat__M8",
+      "original_name": "M8",
+      "mean_abs_shap": 0.0046904804185032845,
+      "rank": 53
+    },
+    {
+      "transformed_name": "num__D9",
+      "original_name": "D9",
+      "mean_abs_shap": 0.0043694325722754,
+      "rank": 54
+    },
+    {
+      "transformed_name": "num__V7",
+      "original_name": "V7",
+      "mean_abs_shap": 0.004248212091624737,
+      "rank": 55
+    },
+    {
+      "transformed_name": "num__V4",
+      "original_name": "V4",
+      "mean_abs_shap": 0.0039314087480306625,
+      "rank": 56
+    },
+    {
+      "transformed_name": "num__D6",
+      "original_name": "D6",
+      "mean_abs_shap": 0.003307437989860773,
+      "rank": 57
+    },
+    {
+      "transformed_name": "num__D12",
+      "original_name": "D12",
+      "mean_abs_shap": 0.0015350095927715302,
+      "rank": 58
+    },
+    {
+      "transformed_name": "num__V6",
+      "original_name": "V6",
+      "mean_abs_shap": 0.0012355821672827005,
+      "rank": 59
+    },
+    {
+      "transformed_name": "num__V3",
+      "original_name": "V3",
+      "mean_abs_shap": 0.001134361606091261,
+      "rank": 60
+    },
+    {
+      "transformed_name": "num__D7",
+      "original_name": "D7",
+      "mean_abs_shap": 0.0008772304281592369,
+      "rank": 61
+    },
+    {
+      "transformed_name": "num__V9",
+      "original_name": "V9",
+      "mean_abs_shap": 0.0007113281753845513,
+      "rank": 62
+    },
+    {
+      "transformed_name": "num__addr2",
+      "original_name": "addr2",
+      "mean_abs_shap": 0.0002608313807286322,
+      "rank": 63
+    },
+    {
+      "transformed_name": "num__V8",
+      "original_name": "V8",
+      "mean_abs_shap": 0.00019472884014248848,
+      "rank": 64
+    },
+    {
+      "transformed_name": "num__V1",
+      "original_name": "V1",
+      "mean_abs_shap": 0.0,
+      "rank": 65
+    }
+  ]
+}

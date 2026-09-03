@@ -1,0 +1,116 @@
+/* Reusable presentational styles for the transaction views.
+   Low contrast, subtle borders, no motion - Riskora language.
+
+   Missing design tokens (index.css uses different names) are defined here so
+   this file is self-contained and safe to load after index.css. */
+
+:root {
+  --bg-elevated: #1a202c;
+  --bg-hover: #222a38;
+  --brand: #3b82f6;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --bg-success: rgba(16, 185, 129, 0.08);
+  --bg-warning: rgba(245, 158, 11, 0.08);
+  --bg-danger: rgba(239, 68, 68, 0.08);
+  --border-success: rgba(16, 185, 129, 0.25);
+  --border-warning: rgba(245, 158, 11, 0.25);
+  --border-danger: rgba(239, 68, 68, 0.25);
+  --border: var(--border-color, #222d3d);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+}
+
+.empty-state-icon {
+  margin: 0 auto 16px;
+  color: var(--text-muted);
+}
+
+.empty-state-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 6px;
+}
+
+.empty-state-desc {
+  font-size: 14px;
+  margin: 0;
+}
+
+.retry-btn {
+  margin-top: 18px;
+  padding: 8px 16px;
+  font-size: 13px;
+}
+
+.skeleton {
+  display: inline-block;
+  background: linear-gradient(90deg, var(--bg-elevated) 0%, var(--bg-hover) 50%, var(--bg-elevated) 100%);
+  border-radius: 4px;
+  background-size: 200% 100%;
+  animation: skeleton-pulse 1.4s ease-in-out infinite;
+  vertical-align: middle;
+}
+
+.skeleton-label { width: 90px; height: 10px; margin-bottom: 8px; }
+.skeleton-value { width: 160px; height: 14px; }
+.skeleton-title { width: 220px; height: 18px; margin-bottom: 24px; }
+
+@keyframes skeleton-pulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.detail-layout { display: flex; flex-direction: column; gap: 20px; }
+.detail-block { padding: 24px; }
+.detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+.detail-field { display: flex; flex-direction: column; gap: 4px; }
+.detail-field .detail-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
+.detail-field .detail-value { font-size: 15px; color: var(--text-primary); font-weight: 500; }
+
+.badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; font-size: 12px; font-weight: 600; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.4px; line-height: 1.4; }
+.badge-low { color: var(--color-success); background: var(--bg-success); border: 1px solid var(--border-success); }
+.badge-medium { color: var(--color-warning); background: var(--bg-warning); border: 1px solid var(--border-warning); }
+.badge-high { color: var(--color-danger); background: var(--bg-danger); border: 1px solid var(--border-danger); }
+.badge-allow { color: var(--color-success); background: var(--bg-success); border: 1px solid var(--border-success); }
+.badge-review { color: var(--color-warning); background: var(--bg-warning); border: 1px solid var(--border-warning); }
+.badge-block { color: var(--color-danger); background: var(--bg-danger); border: 1px solid var(--border-danger); }
+.badge-pending { color: var(--text-muted); background: var(--bg-elevated); border: 1px solid var(--border); }
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; margin-bottom: 20px; }
+.toolbar .form-group { margin-bottom: 0; }
+
+.pagination { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-secondary); }
+.page-btn { min-width: 32px; height: 32px; padding: 0 8px; }
+
+.risk-gauge { display: flex; align-items: baseline; gap: 8px; }
+.risk-gauge .score { font-size: 48px; font-weight: 700; font-family: var(--font-mono); line-height: 1; }
+.risk-gauge .of { font-size: 18px; color: var(--text-muted); font-family: var(--font-mono); }
+.risk-bar { width: 100%; height: 8px; background: var(--bg-elevated); border-radius: 999px; overflow: hidden; margin-top: 12px; }
+.risk-bar > span { display: block; height: 100%; border-radius: 999px; transition: width 0.4s ease; }
+
+.risk-factors { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.risk-factors li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text-secondary); }
+.risk-factors li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--brand); margin-top: 7px; flex-shrink: 0; }
+
+.signals-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+.signal-tile { background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; }
+.signal-tile .signal-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 4px; }
+.signal-tile .signal-value { font-size: 15px; color: var(--text-primary); font-weight: 600; word-break: break-word; }
+
+.audit-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 12px; }
+.audit-list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; }
+.audit-list .audit-action { font-weight: 600; color: var(--text-primary); }
+.audit-list .audit-meta { color: var(--text-muted); font-size: 12px; }
+
+@media (max-width: 768px) {
+  .toolbar { flex-direction: column; }
+  .toolbar .form-group { width: 100%; }
+  .detail-grid, .signals-grid { grid-template-columns: 1fr; }
+}

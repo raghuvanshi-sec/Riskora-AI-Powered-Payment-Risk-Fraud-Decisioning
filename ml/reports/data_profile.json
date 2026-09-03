@@ -1,0 +1,20 @@
+{
+  "dataset": "ieee_cis",
+  "transaction_rows": 590540,
+  "identity_rows": 0,
+  "merged_rows": 590540,
+  "feature_count": 71,
+  "active_feature_count": 69,
+  "train_rows": 472432,
+  "validation_rows": 118108,
+  "target_name": "isFraud",
+  "target_distribution": {
+    "train_legitimate": 455833,
+    "train_fraud": 16599,
+    "val_legitimate": 114044,
+    "val_fraud": 4064
+  },
+  "temporal_split": "80/20 temporal by TransactionDT",
+  "minimum_transaction_dt": 86400.0,
+  "maximum_transaction_dt": 15811131.0
+}

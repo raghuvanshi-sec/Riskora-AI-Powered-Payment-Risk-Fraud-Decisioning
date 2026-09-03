@@ -1,0 +1,71 @@
+# Dependency directories
+node_modules/
+jspm_packages/
+.venv/
+venv/
+env/
+ENV/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# IDEs and editors
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.history/
+
+# Python caches and artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# Operating system files
+Thumbs.db
+db.db
+Desktop.ini
+.DS_Store
+.directory
+
+# SQLite databases used for local development
+*.db
+*.db-wal
+*.db-shm
+
+# ML models and large artifacts
+ml/models/*.pkl
+ml/models/*.joblib
+ml/models/*.json
+ml/data/*.csv
+
+# Tooling/temp folders
+.temp_ag_kit/
+.oxlintrc.json
+
+# Riskora ML datasets
+data/ieee_cis/
+
+# Large ML/data files
+*.csv
+*.parquet
+*.zip

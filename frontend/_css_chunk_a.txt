@@ -1,0 +1,63 @@
+/* ── Hero ─────────────────────────────────────────────────── */
+.ld-hero {
+  position: relative; min-height: 100svh;
+  display: flex; align-items: center;
+  overflow: hidden; padding: 120px 0 60px;
+}
+.ld-hero__grid {
+  position: absolute; inset: 0; z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(139,156,180,0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139,156,180,0.055) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black 30%, transparent 75%);
+}
+.ld-hero__glow {
+  position: absolute; top: -12%; right: -6%; width: 720px; height: 720px;
+  background: radial-gradient(ellipse, rgba(59,130,246,0.14) 0%, transparent 65%);
+  pointer-events: none; z-index: 0;
+}
+.ld-hero__inner {
+  display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.05fr);
+  gap: 56px; align-items: center; width: 100%;
+}
+.ld-hero__copy { position: relative; z-index: 2; min-width: 0; }
+
+.ld-badge {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 7px 14px; border-radius: 100px; margin-bottom: 26px;
+  background: rgba(59,130,246,0.09); border: 1px solid rgba(59,130,246,0.28);
+  font-size: 12px; font-weight: 650; letter-spacing: 0.18em; color: #9cc3ff;
+}
+.ld-badge__dot { width: 6px; height: 6px; border-radius: 50%; background: #34d399; box-shadow: 0 0 10px rgba(52,211,153,0.8); }
+
+.ld-h1 {
+  font-size: clamp(2.6rem, 4.6vw, 3.9rem);
+  font-weight: 800; letter-spacing: -0.03em;
+  line-height: 1.04; margin-bottom: 24px; color: var(--ld-text);
+}
+.ld-h1__accent {
+  background: linear-gradient(115deg,#5b9dff,#9d7bff);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.ld-hero__lede {
+  color: var(--ld-text-2); font-size: 17.5px; line-height: 1.7;
+  max-width: 540px; margin-bottom: 32px;
+}
+.ld-hero__cta { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 26px; }
+
+.ld-hero__tech {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
+  color: var(--ld-text-3); font-size: 13px; font-weight: 500;
+}
+.ld-tech-item { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em; color: #8fa2b8; }
+.ld-tech-sep { color: #3b82f6; opacity: 0.6; }
+
+.ld-hero__honesty {
+  margin-top: 18px; font-size: 12.5px; color: var(--ld-text-3);
+  letter-spacing: 0.01em;
+}
