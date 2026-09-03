@@ -173,6 +173,23 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+.app-navbar__home-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  color: var(--navbar-text);
+  transition: all 0.2s ease;
+  margin-left: 8px;
+}
+
+.app-navbar__home-btn:hover {
+  background-color: var(--navbar-hover-bg);
+  color: var(--text-primary);
+}
+
 .app-navbar__menu {
   display: flex;
   align-items: center;
