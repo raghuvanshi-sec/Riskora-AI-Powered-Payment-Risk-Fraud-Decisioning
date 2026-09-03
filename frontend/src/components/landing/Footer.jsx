@@ -37,11 +37,7 @@ export default function Footer() {
 
         <div className="ld-footer__bottom">
           <div className="ld-footer__copy">
-            © 2024 Riskora. Fraud risk intelligence for financial operations.
-          </div>
-          <div className="ld-footer__links" style={{ gap: '24px', marginTop: 0 }}>
-            <a href="#" className="ld-footer__link" style={{ marginBottom: 0 }}>Privacy</a>
-            <a href="#" className="ld-footer__link" style={{ marginBottom: 0 }}>Terms</a>
+            © 2026 Riskora. Fraud risk intelligence for financial operations.
           </div>
         </div>
       </div>

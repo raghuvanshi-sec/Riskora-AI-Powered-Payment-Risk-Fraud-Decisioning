@@ -1,18 +1,25 @@
 export default function ArchitectureSection() {
-  const stages = [
-    'Transactions',
-    'Transaction Risk Engine',
-    'Merchant Aggregation',
-    'Baseline',
-    'Spike Detection',
-    'Exposure Estimation',
-    'SHAP / Explanation',
-    'Defensive Recommendation',
-    'Audit Trail',
+  const layers = [
+    {
+      title: 'Data Ingestion',
+      nodes: ['Transactions', 'Event Streams', 'Batch Data'],
+    },
+    {
+      title: 'Risk Processing',
+      nodes: ['Feature Extraction', 'Rule Engine', 'XGBoost Model', 'SHAP Attribution'],
+    },
+    {
+      title: 'Decision Layer',
+      nodes: ['Risk Classification', 'Threshold Policy', 'Defensive Actions'],
+    },
+    {
+      title: 'Operations',
+      nodes: ['Case Queue', 'Analyst Review', 'Audit Trail', 'Reporting'],
+    },
   ];
 
   return (
-    <section className="ld-section ld-section--alt" id="architecture">
+    <section className="ld-section" id="architecture">
       <div className="ld-container">
         <div className="ld-section-head">
           <div className="ld-eyebrow">Architecture</div>
@@ -23,13 +30,16 @@ export default function ArchitectureSection() {
         </div>
 
         <div className="ld-arch">
-          {stages.map((label, i) => (
-            <div key={i} className="ld-arch__stage">
-              <div className="ld-arch__num">{String(i + 1).padStart(2, '0')}</div>
-              <div className="ld-arch__label">{label}</div>
-              {i < stages.length - 1 && (
-                <div className="ld-arch__arrow">↓</div>
-              )}
+          {layers.map((layer, i) => (
+            <div key={i} className="ld-arch__layer">
+              <div className="ld-arch__layer-title">{layer.title}</div>
+              <div className="ld-arch__nodes">
+                {layer.nodes.map((node, j) => (
+                  <div key={j} className={`ld-arch__node ${j === 0 || j === layer.nodes.length - 1 ? 'ld-arch__node--accent' : ''}`}>
+                    {node}
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>

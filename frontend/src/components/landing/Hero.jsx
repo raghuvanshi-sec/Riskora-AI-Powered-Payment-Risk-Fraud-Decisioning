@@ -16,15 +16,15 @@ export default function Hero() {
           <div className="ld-hero__eyebrow">AI Fraud Risk Intelligence</div>
 
           <h1 className="ld-hero__headline">
-            Detect <em>fraud spikes</em><br />
-            before they become<br />
-            losses.
+            AI-Powered Payment<br />
+            <em>Risk & Fraud</em><br />
+            Decisioning
           </h1>
 
           <p className="ld-hero__subhead">
-            Riskora turns transaction-level fraud signals into merchant-level risk
-            intelligence — detecting abnormal activity, quantifying potential exposure,
-            and recommending bounded defensive action.
+            Riskora evaluates every transaction, detects suspicious merchant behavior,
+            generates explainable risk scores, and supports both automated and analyst-assisted
+            decisions — all within bounded, auditable policy controls.
           </p>
 
           <div className="ld-hero__actions">
