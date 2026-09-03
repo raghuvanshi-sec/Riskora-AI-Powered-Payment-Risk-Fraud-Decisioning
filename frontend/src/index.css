@@ -259,6 +259,62 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
+}
+
+/* Dashboard View Container */
+.dashboard-view {
+  width: 100%;
+  max-width: 1500px;
+  margin-inline: auto;
+  padding: 32px 32px;
+  box-sizing: border-box;
+}
+
+/* Transactions View Container */
+.transactions-view {
+  width: 100%;
+  max-width: 1500px;
+  margin-inline: auto;
+  padding: 32px 32px;
+  box-sizing: border-box;
+}
+
+/* Risk Queue View Container */
+.risk-queue-view {
+  width: 100%;
+  max-width: 1500px;
+  margin-inline: auto;
+  padding: 32px 32px;
+  box-sizing: border-box;
+}
+
+/* Alerts View Container */
+.alerts-view {
+  width: 100%;
+  max-width: 1500px;
+  margin-inline: auto;
+  padding: 32px 32px;
+  box-sizing: border-box;
+}
+
+/* Responsive dashboard container */
+@media (max-width: 1200px) {
+  .dashboard-view,
+  .transactions-view,
+  .risk-queue-view,
+  .alerts-view {
+    padding: 28px 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-view,
+  .transactions-view,
+  .risk-queue-view,
+  .alerts-view {
+    padding: 20px 16px;
+  }
 }
 
 /* Sidebar Navigation */
