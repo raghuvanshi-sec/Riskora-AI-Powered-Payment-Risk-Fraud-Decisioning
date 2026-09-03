@@ -1160,8 +1160,9 @@
 
 /* ─── Footer ─────────────────────────────────────────────────────────────────── */
 .ld-footer {
-  background: var(--text-primary);
-  color: var(--bg-surface);
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-default);
+  color: var(--text-primary);
   padding: 48px 0;
 }
 
@@ -1198,7 +1199,7 @@
 
 .ld-footer__tagline {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-tertiary);
   margin-top: 2px;
 }
 
@@ -1212,14 +1213,14 @@
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-tertiary);
   margin-bottom: 14px;
 }
 
 .ld-footer__link {
   display: block;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-secondary);
   text-decoration: none;
   margin-bottom: 8px;
   transition: color 0.15s;
@@ -1231,13 +1232,13 @@
 }
 
 .ld-footer__link:hover {
-  color: var(--bg-surface);
+  color: var(--accent);
 }
 
 .ld-footer__bottom {
   margin-top: 48px;
   padding-top: 24px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--border-default);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1245,7 +1246,7 @@
 
 .ld-footer__copy {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-tertiary);
 }
 
 /* ─── Responsive ───────────────────────────────────────────────────────────────── */
