@@ -733,39 +733,50 @@ Security features include:
 
 ---
 
-# 📈 Product Workflow
+## 📈 Product Workflow
 
 Riskora is designed around the workflow of a payment-risk operations team.
 
 ```mermaid
-Transaction
-     │
-     ▼
-Feature Extraction
-     │
-     ├───────────────┐
-     ▼               ▼
-Rules Engine      ML Model
-     │               │
-     └───────┬───────┘
-             ▼
-      Hybrid Risk Score
-             │
-             ▼
-       Risk Classification
-             │
-      ┌──────┼───────┐
-      ▼      ▼       ▼
-    ALLOW  REVIEW   BLOCK
-             │
-             ▼
-       Risk Case Queue
-             │
-             ▼
-       Analyst Decision
-             │
-             ▼
-        Audit Trail
+flowchart TD
+    A[Incoming Transaction]
+    B[Feature Extraction]
+
+    C[Rule Engine]
+    D[XGBoost ML Model]
+
+    E[Hybrid Risk Scoring]
+    F{Risk Classification}
+
+    G[ALLOW]
+    H[REVIEW]
+    I[BLOCK]
+
+    J[Risk Case Queue]
+    K[Analyst Decision]
+    L[Audit Trail]
+
+    A --> B
+
+    B --> C
+    B --> D
+
+    C --> E
+    D --> E
+
+    E --> F
+
+    F -->|Low Risk| G
+    F -->|Medium Risk| H
+    F -->|High Risk| I
+
+    H --> J
+    I --> J
+
+    J --> K
+    K --> L
+
+    G --> L
 ```
 
 # 🔭 Future Roadmap
