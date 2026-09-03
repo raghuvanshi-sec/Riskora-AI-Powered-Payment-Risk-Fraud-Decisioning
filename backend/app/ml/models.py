@@ -222,11 +222,10 @@ def _initialize_models():
     backend_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
     project_dir = os.path.dirname(backend_dir)
     data_dir = os.path.join(project_dir, "data", "ieee_cis")
-    logger.info(f"Looking for data in: {data_dir}")
 
     if os.path.exists(data_dir):
         logger.info("Training model on IEEE CIS fraud detection dataset...")
-        X, y = _load_ieee_cis_data(data_dir, n_samples=100000)
+        X, y = _load_ieee_cis_data(data_dir, n_samples=50000)
 
         if X is not None and y is not None:
             trained_model = _create_trained_model(X, y)
